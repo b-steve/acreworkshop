@@ -1,0 +1,287 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{comment}
+\usepackage[textwidth = 6in, top = 4cm, bottom = 4cm]{geometry}
+\usepackage[hidelinks]{hyperref}
+
+\renewcommand{\topfraction}{0.75}
+% For small, italic captions.
+\usepackage[labelfont={bf,up},font={small,it},labelsep=quad]{caption}
+
+\title{{\bf Spatial modelling with {\tt acre}} \\ University of Lisbon} 
+
+\date{13 May 2024}
+
+\setlength{\parskip}{\baselineskip}
+\setlength{\parindent}{0pt}
+\setlength{\topsep}{0pt}
+
+\begin{document}
+
+\maketitle
+
+Congratulations! You have just been appointed as conservation manager
+of the Southern yellow-cheeked crested gibbon ({\it Nomascus
+  gabriallae}) in Phnom Prich Wildlife Sanctuary (PPWS),
+Cambodia. Exactly why they have appointed someone from the University
+of Lisbon in a remote role is a bit of a mystery, but you decide to
+take on the responsibilities nonetheless.
+
+{\it Nomascus gabriallae} is currently listed as endangered by the
+IUCN. Worldwide, gibbons are threatened by habitat loss from
+expansions in industrial agriculture, and are also hunted in Cambodia
+for food, for biomedical purposes including traditional medicine, and
+for the pet trade. Gibbons population are important because studying
+them can help us understand our own evolutionary history, and also
+understand emerging diseases that affect both humans and
+primates. They also play a role in seed dispersal in forests, and have
+cultural importance in the local region.
+
+It is your job to estimate density and distribution of {\it Nomascus
+  gabriallae} in PPWS: how many groups are there, and where do they
+live?\footnote{Note that the data you will be using in this exercise
+  are simulated and do not truly reflect density and distribution of
+  {\it Nomascus gabriallae} in Phnom Prich Wildlife Sanctuary, but the
+  challenges you will face here are similar to those from a real data
+  set.} To achieve this goal, you will conduct an acoustic survey: you
+will select 18 locations throughout the park, and at each, your team
+will establish three listening posts, with a distance of 1 km between
+adjacent posts.
+
+Each set of three listening posts will collect acoustic spatial
+capture-recapture (SCR) data. When a gibbon group calls it can be
+detected by the listening posts, and when a detection occurs, the
+fieldworkers at the listening post use a compass to estimate the
+direction from which the sound originated. We can then use an SCR
+model to estimate density and distribution in PPWS.
+
+But first, you need to gain a better understanding of the wildlife
+sanctuary itself. Gibbon population density can vary over space in
+response to various environmental covariates, which in this case may
+be the following:
+\begin{itemize}
+\item {\bf Canopy height:} Your biologist collaborators suspect that
+  gibbons prefer to live in taller trees, so regions of PPWS with
+  higher canopies are more likely to support larger numbers of
+  gibbons.
+\item {\bf Forest type:} PPWS is covered in forest, but the type of
+  forest varies between evergreen and deciduous forest. It's possible
+  gibbons will prefer one to the other.
+\item {\bf Elevation:} Gibbons may prefer living at high elevations,
+  low elevations or somewhere in between.
+\item {\bf Villages:} It is well known that gibbons try to avoid
+  humans, so we might expect gibbon population density to be low at
+  locations close to villages.
+\end{itemize}
+
+\section*{Question 1}
+
+Unfortunately it's impossible to observe the covariates canopy height,
+forest type, and elevation at every location in PPWS: you don't have
+the budget to measure every single tree. Unfortunately, you do need to
+know how these covariates vary over the whole region.
+
+To achieve this, you have the budget to select 24 locations at which
+to measure these covariates, and then you will rely on a statistical
+method known as spatial interpolation to fill in the gaps.
+
+First, run the following line of code in R. A plot will appear, and
+you can click on it to select the locations at which to measure these
+covariates. Theb you will fly to Cambodia, and deploy your team.
+
+<<measure-covariates, eval = FALSE>>=
+cov.df <- measure.covariates()
+@
+
+Don't stress too much about the specific locations you select. There
+isn't a particular right answer, although you can probably think of
+some strategies that are worth avoiding.
+
+Once your data have been collected, take a look at the \texttt{cov.df}
+data frame to see the data you have collected. You can create a plot
+of a covariate named ``x'' using the following R code:
+<<plot-covariates, eval = FALSE>>=
+plot.cov(cov.df, "x")
+@
+
+\section*{Question 2}
+
+As you will have seen from your plots, there are large regions of PPWS
+at which you do not currently have covariate values. To carry out
+spatial interpolation on your data, you can use the following line of
+code:
+
+<<spatial-interpolation, eval = FALSE>>=
+interpolated.df <- interpolate.covs(cov.df)
+@
+
+See what happens when you create plots of covariates again, but using
+\texttt{interpolated.df} at the first argument instead of
+\texttt{cov.df}.
+
+Note that we do not have to carry out spatial interpolation for our
+distance to village covariate: we know where the villages are, and so
+we can calculate the exact distance to the nearest village for any
+location in PPWS instead. The village locations can be found in the
+data frame \texttt{villages.pwws}.
+
+\section*{Question 3}
+
+Now it is time to conduct the acoustic surveys. Your first job is to
+select the locations at which each of the 18 sets of three listening
+posts will be deployed. It's not necessary, but you might want to
+consider the plots of covariates from the previous question when
+making up your mind.
+
+Run the following line of code to carry out your acoustic surveys:
+<<survey-data, eval = FALSE>>=
+survey.data <- conduct.survey()
+@
+
+The \texttt{survey.data} object is a list with two components:
+\begin{itemize}
+\item \texttt{survey.data\$traps} contains the locations at which you
+  decided to deploy your listening posts.
+\item \texttt{survey.data\$captures} contains detection data collected
+  on the surveys. See if you can figure out what each column means.
+\end{itemize}
+
+\section*{Question 4}
+
+It's finally time to use the \texttt{acre} package. First, load it up:
+
+<<library-acre, eval = FALSE>>=
+library(acre)
+@
+
+So far, you have collected data from a variety of sources: you have
+covariate information in \texttt{cov.df}, you have village locations
+in \texttt{villages.ppws}, you have listening post locations in
+\texttt{survey.data\$traps}, and you have detection data in
+\texttt{survey.data\$captures}.
+
+The first step is to combind all of these data sources together into
+an R object using the \texttt{read.acre()} function. There are five
+arguments you'll need to use:
+\begin{enumerate}
+\item \texttt{captures}: the data frame with the detection data.
+\item \texttt{traps}: the object with the listening post locations.
+\item \texttt{control.mask}: you need to tell the model the maximum
+  distance at which you can possibly detect a gibbon. In this case,
+  the maximum feasible distance is $3\,000$ m. Use
+  \texttt{control.mask = list(buffer = 3000)} for this argument.
+\item \texttt{loc.cov}: a data frame with columns \texttt{x} and
+  \texttt{y}, specifying locations at which spatial covariates have
+  been measured, and then a further column for each spatial covariates
+  themselves.
+\item \texttt{dist.cov}: a data frame containing locations of objects
+  of interest, from which you want to construct a spatial covariate
+  for the distance to the nearest object. This needs to be a list,
+  where each component name relates to the type of object, and the
+  component itself is a data frame with columns named \texttt{x} and
+  \texttt{y} specifying the locations of these objects. In this case,
+  we just have villages, so you can use \texttt{dist.cov =
+    list(village = village.ppws)}.
+\end{enumerate}
+
+The \texttt{acre} package can create plots of your data for you. Can
+you guess what is being shown when you run the following? Note that
+\texttt{data} is the object that has been returned by
+\texttt{read.acre()}.
+
+<<acre-data-plot, eval = FALSE>>=
+plot(data, type = "capt") # Press return many times after initial plotting.
+plot(data, type = "covariates", session = 1) # Press return a few times. What happens if you change 'session'?
+@ 
+
+\section*{Question 5}
+
+Now it's time to fit some models! Once you have a \texttt{data} object
+from \texttt{read.acre()}, this is straightforward. You can fit a
+default model like this:
+
+<<fit-acre-default, eval = FALSE>>=
+fit1 <- fit.acre(data)
+@ 
+
+To inspect model output, you can try using the following
+functions. See if you can figure out what the output means from each:
+
+<<fit-acre-inspect, eval = FALSE>>=
+summary(fit1)
+plot(fit1, type = "Dsurf", session = 1) # What happens if you change 'session'?
+plot(fit1, type = "Dsurf", new.data = ppws)
+plot(fit1, type = "detfn")
+AIC(fit1)
+@ 
+
+\section*{Question 6}
+
+Experiment with fitting more sophisticated models using additional
+arguments. Here are a couple of ideas.
+
+First, by default, a halfnormal detection function is used. To adjust
+the detection function, you can set the \texttt{detfn} argument to
+\texttt{``hhn''} for the hazard halfnormal function or \texttt{``th''}
+for the threshold detection function.
+
+Second, by default, a homogeneous density model is fitted, so that
+estimated density is the same across the whole sanctuary. To allow
+density to vary with spatial covariates, you can use the
+\texttt{model} argument like this:
+
+<<fit-acre-model, eval = FALSE>>=
+fit2 <- fit.acre(data, model = list(D = ~ x + y))
+@
+
+You can also allow other model parameters to vary with covariates, but
+we won't explore that in this workshop.
+
+Here are some additional notes on fitting more sophisticated
+inhomogeneous density models. Don't feel like you need to explore
+these ideas, but they're available to you if you have time, and you'd
+like to give them a try.
+\begin{itemize}
+\item You can use \texttt{x} and \texttt{y} to allow density to vary
+  with the \texttt{x} and \texttt{y} coordinates in PPWS.
+\item You can use any of the regular formula features available in
+  functions like \texttt{lm()}, allowing you to fit interactions or
+  polynomial terms.
+\item You can use the \texttt{s()} function from \texttt{mgcv} to fit
+  unpenalised splines. Because the splines are unpenalised, you need
+  to be careful about setting the \texttt{k} parameter: too large and
+  you'll overfit, too low and you'll underfit.
+\end{itemize}
+
+\section*{Question 7}
+
+Because these are simulated data, I know exactly how gibbon density
+varies throughout the wildlife sanctuary. There is a prize for
+whoever's model does the best job!
+
+Decide which of your models you like best so that you can enter it in
+our competition. Name the object \texttt{fit.final}, and run the
+following line of code:
+
+<<save-fit, eval = FALSE>>=
+save(fit.final, file = "firstname-lastname.RData")
+@
+
+Make sure to replace \texttt{"firstname-lastname"} with your actual
+first and last names, and don't ignore the hypen. For example, I would
+do the following:
+
+<<save-fit-name, eval = FALSE>>=
+save(fit.final, file = "ben-stevenson.RData")
+@
+
+In my case, a file named \texttt{ben-stevenson.RData} will be created
+on my hard drive, within my R working directory. Find this file on
+your system and upload it to [insert details here]. If you're not sure
+what your R working directory is, then run \texttt{getwd()} to find
+out.
+
+
+
+\end{document}
