@@ -1,5 +1,8 @@
 \documentclass[11pt]{article}
 
+%\VignetteIndexEntry{Data structures}
+%\VignetteEngine{knitr::knitr}
+
 \usepackage{amsmath}
 \usepackage{comment}
 \usepackage[textwidth = 6in, top = 4cm, bottom = 4cm]{geometry}

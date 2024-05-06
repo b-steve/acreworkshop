@@ -1,6 +1,5 @@
 library(geoR)
-load("ppws-mask.RData")
-source("workshop-functions.R")
+library(acreworkshop)
 
 set.seed(1234)
 canopy.height.ppws <- grf(nrow(ppws), grid = ppws, cov.pars = c(1, 100000))$data
@@ -12,7 +11,7 @@ villages.ppws <- cbind(x = c(718469.221610262, 706335.190158707,
                              688836.639539097, 682067.127255598),
                        y = c(1395339.85660492, 1420563.3550554,
                              1409352.91129963, 1389734.63472704))
-village.dist.ppws <- apply(calc.dists(villages.ppws, ppws), 1, min)
+village.dist.ppws <- apply(acreworkshop:::calc.dists(villages.ppws, ppws), 1, min)
 
 true.df <- data.frame(canopy.height = canopy.height.ppws,
                       elevation = elevation.ppws,

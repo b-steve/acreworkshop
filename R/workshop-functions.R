@@ -1,17 +1,34 @@
 ## NAMESPACE stuff.
 
-#' @importFrom viridis viridis
+#' @import Rcpp
 #' @importFrom CircStats rvm
+#' @importFrom graphics image legend locator par points
+#' @importFrom stats rbinom rpois runif
+#' @importFrom utils setTxtProgressBar txtProgressBar
+#' @importFrom viridis viridis
+#' @useDynLib acreworkshop
+NULL
 
+#' Conduct a survey to measure spatial covariates
+#'
+#' Creates a plot of Phnom Prich Wildlife Sanctuary and invites the
+#' user to select sampling locations to measure covariates.
+#'
+#' @return A data frame with columns for the coordinates of the
+#'     selected locations, and a column for each observed spatial
+#'     variable.
+#'
+#' @param skip.wait For development purposes only. Don't set to
+#'     \code{TRUE}!
 #' @export
 measure.covariates <- function(skip.wait = FALSE){
-    z <- rep(0, nrow(ppws))
+    z <- rep(0, nrow(acreworkshop::ppws))
     cols <- "grey"
     n.locs <- 24
     happy <- FALSE
     while (!happy){
         message(paste("\nClick on the map to select", n.locs, "locations at which to measure spatial covariates.\n"))
-        image_xyz(ppws[, 1], ppws[, 2], z, asp = 1, zlim = c(0, 1), col = cols)
+        image_xyz(acreworkshop::ppws[, 1], acreworkshop::ppws[, 2], z, asp = 1, zlim = c(0, 1), col = cols)
         locs <- matrix(0, nrow = n.locs, ncol = 2)
         for (i in 1:n.locs){
             l <- locator(1)
@@ -70,16 +87,27 @@ measure.covariates <- function(skip.wait = FALSE){
                elevation = elevation, forest.type = forest.type)
 }
 
+#' Conduct a survey to collect acoustic detection data
+#'
+#' Creates a plot of Phnom Prich Wildlife Sanctuary and invites the
+#' user to select locations at which to deploy listening posts.
+#'
+#' @return A list with two components: \code{captures} includes the
+#'     detection data, and \code{traps} includes the listening post
+#'     locations.
+#'
+#' @param skip.wait For development purposes only. Don't set to
+#'     \code{TRUE}!
 #' @export
 conduct.survey <- function(skip.wait = FALSE){
-    z <- rep(0, nrow(ppws))
+    z <- rep(0, nrow(acreworkshop::ppws))
     cols <- "grey"
     n.sessions <- 18
     happy <- FALSE
     while (!happy){
         message(paste("\nClick on the map to select", n.sessions,
                       "locations at which to deploy clusters of three listening posts.\n"))
-        image_xyz(ppws[, 1], ppws[, 2], z, asp = 1, zlim = c(0, 1), col = cols)
+        image_xyz(acreworkshop::ppws[, 1], acreworkshop::ppws[, 2], z, asp = 1, zlim = c(0, 1), col = cols)
         points(villages.ppws, pch = 16)
         legend("topleft", legend = "Village", pch = 16)
         traps <- vector(mode = "list", length = n.sessions)
@@ -142,12 +170,22 @@ conduct.survey <- function(skip.wait = FALSE){
     out
 }
 
+#' Plot a spatial covariate
+#'
+#' Plots a spatial covariate at the points provided in the first
+#' argument.
+#'
+#' @param df A data frame with measured or interpolated covariate
+#'     values.
+#' @param cov.name A character string, indicating which column in
+#'     \code{df} to plot.
+#' 
 #' @export
-plot.cov <- function(df, cov.name){
+plotcov <- function(df, cov.name){
     locs <- data.frame(df$x, df$y)
-    if (nrow(df) < nrow(ppws)){
+    if (nrow(df) < nrow(acreworkshop::ppws)){
         closest.points <- which.closest(locs)
-        cov <- rep(NA, nrow(ppws))
+        cov <- rep(NA, nrow(acreworkshop::ppws))
         cov[closest.points] <- df[[cov.name]]
     } else {
         cov <- df[[cov.name]]
@@ -155,17 +193,46 @@ plot.cov <- function(df, cov.name){
     if (is.character(cov)){
         cov <- as.numeric(as.factor(cov))
     }
-    z <- rep(0, nrow(ppws))
-    image_xyz(ppws[, 1], ppws[, 2], z, col = "grey", asp = 1)
+    z <- rep(0, nrow(acreworkshop::ppws))
+    image_xyz(acreworkshop::ppws[, 1], acreworkshop::ppws[, 2], z, col = "grey", asp = 1)
     col <- viridis(20)
-    image_xyz(ppws[, 1], ppws[, 2], cov, col = col, asp = 1, add = TRUE)
+    image_xyz(acreworkshop::ppws[, 1], acreworkshop::ppws[, 2], cov, col = col, asp = 1, add = TRUE)
 }
 
+#' Interpolate a spatial covariate
+#'
+#' Conducts spatial interpolation to impute values of covariates
+#' throughout Phnom Prich Wildlife Sanctuary.
+#'
+#' @return A data frame. The first two columns are x- and
+#'     y-coordinates covering Phnom Prich Wildlife
+#'     Sanctuary. Remaining columns provide interpolated covariate
+#'     values.
+#' 
+#' @param df A data frame with measured covariate values.
+#' 
 #' @export
 interpolate.covs <- function(df){
-    data.frame(x = ppws[, 1], y = ppws[, 2], acre:::par_extend_create(loc.cov = cov.df, mask = list(ppws))$output$data$mask[, -c(1, 2)])
+    data.frame(x = acreworkshop::ppws[, 1], y = acreworkshop::ppws[, 2], acre:::par_extend_create(loc.cov = df, mask = list(acreworkshop::ppws))$output$data$mask[, -c(1, 2)])
     
 }
+
+#' A grid of cells covering Phnom Prich Wildlife Sanctuary
+#'
+#' A data frame specifying x- and y-coordinates for a grid of cells
+#' that covers Phnom Prich Wildlife Sanctuary.
+#'
+#' @format ## `ppws`
+#' A data frame with two columns: x and y.
+"ppws"
+
+#' Locations of villages in Phnom Prich Wildlife Sanctuary
+#'
+#' A data frame specifying x- and y-coordinates for villages.
+#'
+#' @format ## `ppws`
+#' A data frame with two columns: x and y.
+"villages.df"
 
 image_xyz <- function(x, y, z, ...){
     u.x <- sort(unique(x))
@@ -188,12 +255,12 @@ calc.bearings <- function(points1, points2){
 }
 
 which.closest <- function(locs){
-    d <- calc.dists(locs, ppws)
+    d <- calc.dists(locs, acreworkshop::ppws)
     apply(d, 2, function (x) which(x == min(x))[1])
 }
 
 sim.pop <- function(df, D.calc){
-    mask <- ppws
+    mask <- acreworkshop::ppws
     ## Calculating density for every mask cell.
     D <- D.calc(df)
     ## Number of cells in the mask.
@@ -268,11 +335,11 @@ compare.to.truth <- function(df){
     true.df <- data.frame(elevation = elevation.ppws,
                           canopy.height = canopy.height.ppws,
                           forest.type = forest.type.ppws)
-    plot.cov(df, "elevation")
-    plot.cov(true.df, "elevation")
-    plot.cov(df, "canopy.height")
-    plot.cov(true.df, "canopy.height")
-    plot.cov(df, "forest.type")
-    plot.cov(true.df, "forest.type")
+    plotcov(df, "elevation")
+    plotcov(true.df, "elevation")
+    plotcov(df, "canopy.height")
+    plotcov(true.df, "canopy.height")
+    plotcov(df, "forest.type")
+    plotcov(true.df, "forest.type")
     par(ppar)
 }

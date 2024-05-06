@@ -5,9 +5,14 @@ Date: 2024-05-06
 Authors@R: 
     person("Ben", "Stevenson", , "ben.stevenson@auckland.ac.nz", role = c("aut", "cre"))
 Depends:
-	Rcpp
+    R (>= 3.5.0),
+    Rcpp
 Imports:
-	CircStats,
+	acre,
+	CircStats,	
+	graphics,
+	stats,
+	utils,
 	viridis	
 LinkingTo: Rcpp
 Description: This package provides data and functions for a workshop on spatial modelling of animal density with the acre R package.
@@ -15,3 +20,4 @@ License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+LazyData: true
