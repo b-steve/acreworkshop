@@ -24,6 +24,41 @@
 
 \maketitle
 
+\section*{Set up}
+
+To participate in this workshop you need to install two packages,
+neither of which are currently available on CRAN. The easiest way to
+install these packages is to first install the \texttt{devtools}
+package, and then run the following code:
+
+<<package-install, eval = FALSE>>=
+library(devtools)
+install_github("b-steve/acre")
+install_github("b-steve/acreworkshop")
+@
+
+Windows users will probably need Rtools installed first
+(\url{https://cran.r-project.org/bin/windows/Rtools/}).
+
+Once you've installed the packages, load them into your R session.
+
+<<package-load, eval = FALSE>>=
+library(acre)
+library(acreworkshop)
+@ 
+
+Also, a quick disclaimer: the \texttt{acre} package is still under
+development, so there's a good chance something will go wrong! If you
+think you have fallen victim to a bug, let Ben or Tiago know, and we
+can try to help you out and fix it later on. The documentation is not
+complete, so if you're stuck with how to use a function then feel free
+to ask us any questions.
+
+If you have any suggestions to improve the package then let us know:
+we'd love to hear them.
+
+\section*{Introduction and background}
+
 Congratulations! You have just been appointed as conservation manager
 of the southern yellow-cheeked crested gibbon ({\it Nomascus
   gabriallae}) in Phnom Prich Wildlife Sanctuary (PPWS),
@@ -31,11 +66,11 @@ Cambodia. Exactly why they have appointed someone from the University
 of Lisbon in a remote role is a bit of a mystery, but you decide to
 take on the responsibilities nonetheless.
 
-{\it Nomascus gabriallae} is currently listed as endangered by the
-IUCN. Worldwide, gibbons are threatened by habitat loss from
+{\it Nomascus gabriallae} is currently listed as an endangered species
+by the IUCN. Worldwide, gibbons are threatened by habitat loss from
 expansions in industrial agriculture, and are also hunted in Cambodia
 for food, for biomedical purposes including traditional medicine, and
-for the pet trade. Gibbons population are important because studying
+for the pet trade. Gibbon populations are important because studying
 them can help us understand our own evolutionary history, and also
 understand emerging diseases that affect both humans and
 primates. They also play a role in seed dispersal in forests, and have
@@ -57,7 +92,8 @@ capture-recapture (SCR) data. When a gibbon group calls it can be
 detected by the listening posts, and when a detection occurs, the
 fieldworkers at the listening post use a compass to estimate the
 direction from which the sound originated. We can then use an SCR
-model to estimate density and distribution in PPWS.
+model to estimate density and distribution in PPWS using the R package
+\texttt{acre}.
 
 But first, you need to gain a better understanding of the wildlife
 sanctuary itself. Gibbon population density can vary over space in
@@ -72,7 +108,7 @@ be the following:
   forest varies between evergreen and deciduous forest. It's possible
   gibbons will prefer one to the other.
 \item {\bf Elevation:} Gibbons may prefer living at high elevations,
-  low elevations or somewhere in between.
+  low elevations, or somewhere in between.
 \item {\bf Villages:} It is well known that gibbons try to avoid
   humans, so we might expect gibbon population density to be low at
   locations close to villages.
@@ -82,16 +118,16 @@ be the following:
 
 Unfortunately it's impossible to observe the covariates canopy height,
 forest type, and elevation at every location in PPWS: you don't have
-the budget to measure every single tree. Unfortunately, you do need to
+the budget to measure every single tree. Nevertheless, you do need to
 know how these covariates vary over the whole region.
 
-To achieve this, you have the budget to select 24 locations at which
-to measure these covariates, and then you will rely on a statistical
-method known as spatial interpolation to fill in the gaps.
+To achieve this, you have the budget to select 24 locations to deploy
+fieldworkers to measure these covariates, and then you will rely on a
+statistical method known as spatial interpolation to fill in the gaps.
 
 First, run the following line of code in R. A plot will appear, and
 you can click on it to select the locations at which to measure these
-covariates. Theb you will fly to Cambodia, and deploy your team.
+covariates. Then you can fly to Cambodia and deploy your team.
 
 <<measure-covariates, eval = FALSE>>=
 cov.df <- measure.covariates()
@@ -102,11 +138,15 @@ isn't a particular right answer, although you can probably think of
 some strategies that are worth avoiding.
 
 Once your data have been collected, take a look at the \texttt{cov.df}
-data frame to see the data you have collected. You can create a plot
-of a covariate named ``x'' using the following R code:
+data frame to see the data you have collected. You can also create
+plots of the covariates using the following R code:
+
 <<plot-covariates, eval = FALSE>>=
 plotcov(cov.df, "x")
 @
+
+Replace \texttt{"x"} with the name of a different column in
+\texttt{cov.df} to take a look at different variables.
 
 \section*{Question 2}
 
@@ -127,7 +167,7 @@ Note that we do not have to carry out spatial interpolation for our
 distance to village covariate: we know where the villages are, and so
 we can calculate the exact distance to the nearest village for any
 location in PPWS instead. The village locations can be found in the
-data frame \texttt{villages.pwws}.
+data frame \texttt{villages.df}.
 
 \section*{Question 3}
 
@@ -152,7 +192,8 @@ The \texttt{survey.data} object is a list with two components:
 
 \section*{Question 4}
 
-It's finally time to use the \texttt{acre} package. First, load it up:
+It's finally time to use the \texttt{acre} package. First, load it up,
+if you haven't already:
 
 <<library-acre, eval = FALSE>>=
 library(acre)
@@ -164,16 +205,16 @@ in \texttt{villages.df}, you have listening post locations in
 \texttt{survey.data\$traps}, and you have detection data in
 \texttt{survey.data\$captures}.
 
-The first step is to combind all of these data sources together into
+The first step is to combine all of these data sources together into
 an R object using the \texttt{read.acre()} function. There are five
 arguments you'll need to use:
 \begin{enumerate}
 \item \texttt{captures}: the data frame with the detection data.
 \item \texttt{traps}: the object with the listening post locations.
-\item \texttt{control.mask}: you need to tell the model the maximum
-  distance at which you can possibly detect a gibbon. In this case,
-  the maximum feasible distance is $3\,000$ m. Use
-  \texttt{control.mask = list(buffer = 3000)} for this argument.
+\item \texttt{control.mask}: you need to specify the maximum distance
+  at which you can possibly detect a gibbon. In this case, the maximum
+  feasible distance is $3\,000$ m. Use \texttt{control.mask =
+    list(buffer = 3000)} for this argument.
 \item \texttt{loc.cov}: a data frame with columns \texttt{x} and
   \texttt{y}, specifying locations at which spatial covariates have
   been measured, and then a further column for each spatial covariates
@@ -194,8 +235,10 @@ you guess what is being shown when you run the following? Note that
 \texttt{read.acre()}.
 
 <<acre-data-plot, eval = FALSE>>=
-plot(data, type = "capt") # Press return many times after initial plotting.
-plot(data, type = "covariates", session = 1) # Press return a few times. What happens if you change 'session'?
+## Press return many times after initial plotting.
+plot(data, type = "capt")
+## Press return a few times. What happens if you change 'session'?
+plot(data, type = "covariates", session = 1) 
 @ 
 
 \section*{Question 5}
@@ -213,7 +256,8 @@ functions. See if you can figure out what the output means from each:
 
 <<fit-acre-inspect, eval = FALSE>>=
 summary(fit1)
-plot(fit1, type = "Dsurf", session = 1) # What happens if you change 'session'?
+# What happens if you change 'session'?
+plot(fit1, type = "Dsurf", session = 1) 
 plot(fit1, type = "Dsurf", new.data = ppws)
 plot(fit1, type = "detfn")
 AIC(fit1)
@@ -226,7 +270,7 @@ arguments. Here are a couple of ideas.
 
 First, by default, a halfnormal detection function is used. To adjust
 the detection function, you can set the \texttt{detfn} argument to
-\texttt{``hhn''} for the hazard halfnormal function or \texttt{``th''}
+\texttt{"hhn"} for the hazard halfnormal function or \texttt{"th"}
 for the threshold detection function.
 
 Second, by default, a homogeneous density model is fitted, so that
@@ -281,9 +325,10 @@ save(fit.final, file = "ben-stevenson.RData")
 
 In my case, a file named \texttt{ben-stevenson.RData} will be created
 on my hard drive, within my R working directory. Find this file on
-your system and upload it to [insert details here]. If you're not sure
-what your R working directory is, then run \texttt{getwd()} to find
-out.
+your system and upload it using this linke:
+\url{https://drive.google.com/drive/folders/1SghP6bAKhMHvhIHC-c17r-RACmflBjOT?usp=sharing}. If
+you're not sure what your R working directory is, then run
+\texttt{getwd()} to find out.
 
 \section*{In case you're interested...}
 
