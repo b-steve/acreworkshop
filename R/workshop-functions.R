@@ -3,6 +3,7 @@
 #' @import Rcpp
 #' @importFrom CircStats rvm
 #' @importFrom graphics image legend locator par points
+#' @importFrom grDevices dev.off x11
 #' @importFrom stats rbinom rpois runif
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #' @importFrom viridis viridis
@@ -22,6 +23,7 @@ NULL
 #'     \code{TRUE}!
 #' @export
 measure.covariates <- function(skip.wait = FALSE){
+    x11()
     z <- rep(0, nrow(acreworkshop::ppws))
     cols <- "grey"
     n.locs <- 24
@@ -83,6 +85,7 @@ measure.covariates <- function(skip.wait = FALSE){
     canopy.height <- canopy.height.ppws[closest.points]
     elevation <- elevation.ppws[closest.points]
     forest.type <- forest.type.ppws[closest.points]
+    dev.off()
     data.frame(x = locs[, 1], y = locs[, 2], canopy.height = canopy.height,
                elevation = elevation, forest.type = forest.type)
 }
@@ -100,6 +103,7 @@ measure.covariates <- function(skip.wait = FALSE){
 #'     \code{TRUE}!
 #' @export
 conduct.survey <- function(skip.wait = FALSE){
+    x11()
     z <- rep(0, nrow(acreworkshop::ppws))
     cols <- "grey"
     n.sessions <- 18
@@ -167,6 +171,7 @@ conduct.survey <- function(skip.wait = FALSE){
         }
         message("\n")
     }
+    dev.off()
     out
 }
 
