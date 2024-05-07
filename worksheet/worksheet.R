@@ -16,7 +16,7 @@ plotcov(interpolated.df, "canopy.height")
 plotcov(cov.df, "forest.type")
 plotcov(interpolated.df, "forest.type")
 
-acreworkshop:::compare.to.truth(interpolated.df)
+acreworkshop:::compare.cov.to.truth(interpolated.df)
 
 survey.data <- conduct.survey(skip.wait = TRUE)
 
@@ -30,20 +30,35 @@ plot(data, type = "capt")
 plot(data, type = "covariates")
 
 fit1 <- fit.acre(data, detfn = "hhn")
-fit2 <- fit.acre(data, detfn = "hhn", model = list(D = ~ s(canopy.height, k = 4)))
-fit3 <- fit.acre(data, detfn = "hhn", model = list(D = ~ s(canopy.height, k = 4) + s(villages, k = 3)))
+fit2 <- fit.acre(data, detfn = "hhn", model = list(D = ~ canopy.height))
+fit3 <- fit.acre(data, detfn = "hhn", model = list(D = ~ villages))
+fit4 <- fit.acre(data, detfn = "hhn", model = list(D = ~ forest.type))
+fit5 <- fit.acre(data, detfn = "hhn", model = list(D = ~ canopy.height + forest.type
+                                                   + villages))
+fit6 <- fit.acre(data, detfn = "hhn", model = list(D = ~ canopy.height + forest.type
+                                                   + s(villages, k = 3)))
 
 summary(fit1)
 summary(fit2)
 summary(fit3)
-
-plot(fit1, type = "Dsurf", new.data = ppws)
-plot(fit2, type = "Dsurf", new.data = ppws)
-plot(fit3, type = "Dsurf", new.data = ppws)
-
-plot(fit1, type = "detfn")
-plot(fit2, type = "detfn", add = TRUE, col = "red")
+summary(fit4)
+summary(fit5)
+summary(fit6)
 
 AIC(fit1)
 AIC(fit2)
 AIC(fit3)
+AIC(fit4)
+AIC(fit5)
+AIC(fit6)
+
+plot(fit1, type = "detfn")
+
+plot(fit1, type = "Dsurf", new.data = ppws)
+plot(fit2, type = "Dsurf", new.data = ppws)
+plot(fit3, type = "Dsurf", new.data = ppws)
+plot(fit4, type = "Dsurf", new.data = ppws)
+plot(fit5, type = "Dsurf", new.data = ppws)
+plot(fit6, type = "Dsurf", new.data = ppws)
+
+acreworkshop:::compare.D.to.truth(fit2)
