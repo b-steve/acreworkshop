@@ -330,7 +330,7 @@ sim.det <- function(s, traps, pars){
     list(captures = captures, traps = traps)
 }
 
-compare.to.truth <- function(df){
+compare.cov.to.truth <- function(df){
     ppar <- par(mfrow = c(3, 2))
     true.df <- data.frame(elevation = elevation.ppws,
                           canopy.height = canopy.height.ppws,
@@ -341,5 +341,13 @@ compare.to.truth <- function(df){
     plotcov(true.df, "canopy.height")
     plotcov(df, "forest.type")
     plotcov(true.df, "forest.type")
+    par(ppar)
+}
+
+compare.D.to.truth <- function(fit){
+    ppar <- par(mfrow = c(1, 2))
+    df <- data.frame(D = D.ppws)
+    plot(fit, type = "Dsurf", new.data = acreworkshop::ppws)
+    plotcov(df, "D")
     par(ppar)
 }
