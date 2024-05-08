@@ -243,7 +243,7 @@ image_xyz <- function(x, y, z, ...){
     u.x <- sort(unique(x))
     u.y <- sort(unique(y))
     z.mat <- squarify(cbind(x, y), z)
-    image(u.x, u.y, z.mat, ..., xlab = "x", ylab = "y")
+    image(u.x, u.y, z.mat, ..., xlab = "x-coordinate", ylab = "y-coordinate")
 }
 
 calc.dists <- function(points1, points2){
@@ -332,6 +332,13 @@ sim.det <- function(s, traps, pars){
                                     bearing = bearing.sess)
     }
     captures <- do.call(rbind, captures)
+    u.animals <- unique(captures$ID)
+    n.det.animals <- length(u.animals)
+    ID.ordered <- numeric(nrow(captures))
+    for (i in 1:n.det.animals){
+        ID.ordered[captures$ID == u.animals[i]] <- i
+    }
+    captures$ID <- ID.ordered
     list(captures = captures, traps = traps)
 }
 
