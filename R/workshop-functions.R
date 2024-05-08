@@ -339,6 +339,7 @@ sim.det <- function(s, traps, pars){
         ID.ordered[captures$ID == u.animals[i]] <- i
     }
     captures$ID <- ID.ordered
+    captures <- captures[order(captures$ID), ]
     list(captures = captures, traps = traps)
 }
 
