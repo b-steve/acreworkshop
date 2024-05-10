@@ -82,8 +82,8 @@ measure.covariates <- function(skip.wait = FALSE){
         message("\n")
     }
     closest.points <- which.closest(locs)
-    canopy.height <- canopy.height.ppws[closest.points]
-    elevation <- elevation.ppws[closest.points]
+    canopy.height <- round(canopy.height.ppws[closest.points], 1)
+    elevation <- round(elevation.ppws[closest.points], 1)
     forest.type <- forest.type.ppws[closest.points]
     dev.off()
     data.frame(x = locs[, 1], y = locs[, 2], canopy.height = canopy.height,
