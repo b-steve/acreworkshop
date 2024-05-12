@@ -239,6 +239,21 @@ interpolate.covs <- function(df){
 #' A data frame with two columns: x and y.
 "villages.df"
 
+rank.models <- function(){
+    file.names <- list.files(pattern = "RData")
+    n.files <- length(file.names)
+    D.ssq <- numeric(n.files)
+    for (i in 1:n.files){
+        load(file.names[i])
+        D.pred <- acre:::predict_D_for_plot(fit.final, new_data = acreworkshop::ppws)[, 3]
+        D.ssq[i] <- sum((D.pred - D.ppws)^2)
+        rm(fit.final)
+    }
+    data.frame(file.names, D.ssq)[order(D.ssq), ]
+}
+
+fit.final <- NULL
+
 image_xyz <- function(x, y, z, ...){
     u.x <- sort(unique(x))
     u.y <- sort(unique(y))
