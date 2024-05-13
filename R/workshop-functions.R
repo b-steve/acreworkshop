@@ -2,6 +2,7 @@
 
 #' @import Rcpp
 #' @importFrom CircStats rvm
+#' @importFrom fields image.plot
 #' @importFrom graphics image legend locator par points
 #' @importFrom grDevices dev.off x11
 #' @importFrom stats rbinom rpois runif
@@ -202,6 +203,11 @@ plotcov <- function(df, cov.name){
     image_xyz(acreworkshop::ppws[, 1], acreworkshop::ppws[, 2], z, col = "grey", asp = 1)
     col <- viridis(20)
     image_xyz(acreworkshop::ppws[, 1], acreworkshop::ppws[, 2], cov, col = col, asp = 1, add = TRUE)
+    if (cov.name == "forest.type"){
+        legend("topleft", legend = c("deciduous", "evergreen"), pch = 15, col = c(col[1], col[length(col)]))
+    } else {
+        image_xyz_legend(acreworkshop::ppws[, 1], acreworkshop::ppws[, 2], cov, col = col)
+    }
 }
 
 #' Interpolate a spatial covariate
@@ -259,6 +265,13 @@ image_xyz <- function(x, y, z, ...){
     u.y <- sort(unique(y))
     z.mat <- squarify(cbind(x, y), z)
     image(u.x, u.y, z.mat, ..., xlab = "x-coordinate", ylab = "y-coordinate")
+}
+
+image_xyz_legend <- function(x, y, z, col){
+    u.x <- sort(unique(x))
+    u.y <- sort(unique(y))
+    z.mat <- squarify(cbind(x, y), z)
+    image.plot(u.x, u.y, z.mat, col = col, legend.only = TRUE)
 }
 
 calc.dists <- function(points1, points2){

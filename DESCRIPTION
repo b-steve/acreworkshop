@@ -9,7 +9,8 @@ Depends:
     Rcpp
 Imports:
 	acre,
-	CircStats,	
+	CircStats,
+	fields,
 	graphics,
 	grDevices,
 	stats,
