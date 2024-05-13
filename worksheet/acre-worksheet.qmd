@@ -13,14 +13,16 @@ bibliography: refs.bib
 
 To participate in this workshop you need to install two packages,
 neither of which are currently available on CRAN. The easiest way to
-install these packages is to first install the `devtools`
-package, and then run the following code, although Windows users will
-need [Rtools installed first](https://cran.r-project.org/bin/windows/Rtools/).
+install these packages is to first install the `devtools` package, and
+then run the following code, although Windows users will need [Rtools
+installed first](https://cran.r-project.org/bin/windows/Rtools/). If
+you install Rtools, or have to reinstall either `acre` or
+`acreworkshop`, then restart your R session before continuing.
 
 ```{r}
 #| eval: false
 library(devtools)
-install_github("b-steve/acre")
+install_github("b-steve/acre", ref = "lisbon-workshop")
 install_github("b-steve/acreworkshop")
 ```
 
@@ -233,11 +235,13 @@ create this object. There are five arguments you'll need to use:
  2. `traps`: the object with the listening post locations.
  3. `control.mask`: you need to specify the maximum distance
   at which you can possibly detect a gibbon. In this case, the maximum
-  feasible distance is $3\,000$ m. Use `control.mask = list(buffer = 3000)` for this argument.
- 4. `loc.cov`: a data frame with columns `x` and
-  `y`, specifying locations at which spatial covariates have
-  been measured, and then a further column for each spatial covariates
-  themselves.
+  feasible distance is $3\,000$ m. Use `control.mask = list(buffer = 3000)` for this argument.  
+ 4. `loc.cov`: a data frame with columns `x` and `y`, specifying
+  locations at which spatial covariates have been measured, and then a
+  further column for each spatial covariates themselves. For this step
+  you should provide the data frame containing the measured covariate
+  values, rather than the interpolated values. The function will
+  complete the interpolation for you.
  5. `dist.cov`: a data frame containing locations of objects
   of interest, from which you want to construct a spatial covariate
   for the distance to the nearest object. This needs to be a list,
@@ -280,7 +284,7 @@ functions. See if you can figure out what the output means from each:
 ```{r}
 #| eval: false
 summary(fit1)
-# What happens if you change 'session'?
+## What happens if you change 'session'?
 plot(fit1, type = "Dsurf", session = 1) 
 plot(fit1, type = "Dsurf", new.data = ppws)
 plot(fit1, type = "detfn")
@@ -323,8 +327,12 @@ like to give them a try.
  + You can use `x` and `y` to allow density to vary
   with the `x` and `y` coordinates in PPWS.
  + You can use any of the regular formula features available in
-  functions like `lm()`, allowing you to fit interactions or
-  polynomial terms.
+  functions like `lm()`. Here are some examples:
+    + Interaction terms, for example using `var1*var2`.
+    + Polynomial terms, for example using `poly()`, or `var + I(var^2)`.    
+    + Any other variable transformations using `I()`, for example
+     using `I(ifelse(var > 10, "large", "small"))` to create a
+     categorical variable from a continuous variable.
  + You can use the `s()` function from `mgcv` to fit
   unpenalised splines. Because the splines are unpenalised, you need
   to be careful about setting the `k` parameter: too large and
