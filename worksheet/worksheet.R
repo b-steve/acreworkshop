@@ -36,7 +36,7 @@ fit4 <- fit.acre(data, detfn = "hhn", model = list(D = ~ forest.type))
 fit5 <- fit.acre(data, detfn = "hhn", model = list(D = ~ canopy.height + forest.type
                                                    + villages))
 fit6 <- fit.acre(data, detfn = "hhn", model = list(D = ~ canopy.height + forest.type
-                                                   + s(villages, k = 3)))
+                                                   + I(ifelse(villages < 5000, 0, 1))))
 
 summary(fit1)
 summary(fit2)
@@ -61,4 +61,4 @@ plot(fit4, type = "Dsurf", new.data = ppws)
 plot(fit5, type = "Dsurf", new.data = ppws)
 plot(fit6, type = "Dsurf", new.data = ppws)
 
-acreworkshop:::compare.D.to.truth(fit2)
+acreworkshop:::compare.D.to.truth(fit6)
