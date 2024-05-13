@@ -36,7 +36,7 @@ fit4 <- fit.acre(data, detfn = "hhn", model = list(D = ~ forest.type))
 fit5 <- fit.acre(data, detfn = "hhn", model = list(D = ~ canopy.height + forest.type
                                                    + villages))
 fit6 <- fit.acre(data, detfn = "hhn", model = list(D = ~ canopy.height + forest.type
-                                                   + I(ifelse(villages < 5000, 0, 1))))
+                                                   + I(ifelse(villages < 5000, "near", "far"))))
 
 summary(fit1)
 summary(fit2)
