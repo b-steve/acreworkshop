@@ -386,7 +386,7 @@ compare.cov.to.truth <- function(df){
 }
 
 compare.D.to.truth <- function(fit){
-    ppar <- par(mfrow = c(1, 2))
+    ppar <- par(mfrow = c(1, 2), mar = c(4, 4, 2, 6))
     df <- data.frame(D = D.ppws)
     plot(fit, type = "Dsurf", new.data = acreworkshop::ppws)
     plotcov(df, "D")
