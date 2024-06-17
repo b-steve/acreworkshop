@@ -28,20 +28,21 @@ measure.covariates <- function(skip.wait = FALSE){
     z <- rep(0, nrow(acreworkshop::ppws))
     cols <- "grey"
     n.locs <- 24
+    message(paste("\nClick on the map to select", n.locs, "locations at which to measure spatial covariates.\n"))
+    image_xyz(acreworkshop::ppws[, 1], acreworkshop::ppws[, 2], z, asp = 1, zlim = c(0, 1), col = cols)
+    locs <- matrix(0, nrow = n.locs, ncol = 2)
+    for (i in 1:n.locs){
+        l <- locator(1)
+        locs[i, ] <- c(l$x, l$y)
+        points(locs[i, , drop = FALSE], pch = 16)
+    }
+    h <- readline("Are you happy with these selections? \n\nType 'y' to deploy your team to collect data. Type 'n' to reselect.\n")
     happy <- FALSE
-    while (!happy){
-        message(paste("\nClick on the map to select", n.locs, "locations at which to measure spatial covariates.\n"))
-        image_xyz(acreworkshop::ppws[, 1], acreworkshop::ppws[, 2], z, asp = 1, zlim = c(0, 1), col = cols)
-        locs <- matrix(0, nrow = n.locs, ncol = 2)
-        for (i in 1:n.locs){
-            l <- locator(1)
-            locs[i, ] <- c(l$x, l$y)
-            points(locs[i, , drop = FALSE], pch = 16)
-        }
-        h <- readline("Are you happy with these selections? \n\nType 'y' to deploy your team to collect data. Type 'n' to reselect.\n")
-        if (h == "yes" | h == "y" | h == "Y" | h == "Yes"){
-            happy <- TRUE
-        }
+    if (h == "yes" | h == "y" | h == "Y" | h == "Yes"){
+        happy <- TRUE
+    }
+    if (!happy){
+        stop("You did not comfirm your selections. Please re-run the function to try again.")
     }
     if (!skip.wait){
         message("Flying to Cambodia...")
@@ -108,23 +109,24 @@ conduct.survey <- function(skip.wait = FALSE){
     z <- rep(0, nrow(acreworkshop::ppws))
     cols <- "grey"
     n.sessions <- 18
+    message(paste("\nClick on the map to select", n.sessions,
+                  "locations at which to deploy clusters of three listening posts.\n"))
+    image_xyz(acreworkshop::ppws[, 1], acreworkshop::ppws[, 2], z, asp = 1, zlim = c(0, 1), col = cols)
+    points(acreworkshop::villages.df, pch = 16)
+    legend("topleft", legend = "Village", pch = 16)
+    traps <- vector(mode = "list", length = n.sessions)
+    for (i in 1:n.sessions){
+        l <- locator(1)
+        traps[[i]] <- cbind(x = c(l$x - 1000, l$x, l$x + 1000), y = rep(l$y, 3))
+        points(traps[[i]], pch = 4)
+    }
+    h <- readline("Are you happy with these selections? \n\nType 'y' to deploy your team to conduct acoustic surveys. Type 'n' to reselect.\n")
     happy <- FALSE
-    while (!happy){
-        message(paste("\nClick on the map to select", n.sessions,
-                      "locations at which to deploy clusters of three listening posts.\n"))
-        image_xyz(acreworkshop::ppws[, 1], acreworkshop::ppws[, 2], z, asp = 1, zlim = c(0, 1), col = cols)
-        points(acreworkshop::villages.df, pch = 16)
-        legend("topleft", legend = "Village", pch = 16)
-        traps <- vector(mode = "list", length = n.sessions)
-        for (i in 1:n.sessions){
-            l <- locator(1)
-            traps[[i]] <- cbind(x = c(l$x - 1000, l$x, l$x + 1000), y = rep(l$y, 3))
-            points(traps[[i]], pch = 4)
-        }
-        h <- readline("Are you happy with these selections? \n\nType 'y' to deploy your team to conduct acoustic surveys. Type 'n' to reselect.\n")
-        if (h == "yes" | h == "y" | h == "Y" | h == "Yes"){
-            happy <- TRUE
-        }
+    if (h == "yes" | h == "y" | h == "Y" | h == "Yes"){
+        happy <- TRUE
+    }
+    if (!happy){
+        stop("You did not comfirm your selections. Please re-run the function to try again.")
     }
     out <- sim.det(s.ppws, traps, c(20, 500, 50))
     if (!skip.wait){
