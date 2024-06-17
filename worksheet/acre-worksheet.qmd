@@ -1,8 +1,7 @@
 ---
 title: "Modelling acoustic spatial capture-recapture data with `acre`"
 title-block-banner: "#046A38"
-subtitle: "University of Lisbon"
-date: "13 May 2024"
+date: "17 June 2024"
 format: html
 toc: true
 toc-depth: 2
@@ -40,12 +39,11 @@ library(acreworkshop)
 ::: {.callout-warning}
 ## A quick disclaimer
 
-The `acre` package is still under
-development, so there's a good chance something will go wrong! If you
-think you have fallen victim to a bug, let Ben or Tiago know, and we
-can try to help you out and fix it later on. The documentation is not
-complete, so if you're stuck with how to use a function then feel free
-to ask us any questions.
+The `acre` package is still under development, so there's a good
+chance something will go wrong! If you think you have fallen victim to
+a bug, let Ben know, and we can try to help you out and fix it later
+on. The documentation is not complete, so if you're stuck with how to
+use a function then feel free to ask us any questions.
 
 If you have any suggestions to improve the package then let us know:
 we'd love to hear them.
@@ -56,10 +54,12 @@ we'd love to hear them.
 
 ## Introduction and background
 
-**Congratulations!** You have just been appointed as conservation manager
-of the southern yellow-cheeked crested gibbon (*Nomascus gabriallae*) in Phnom Prich Wildlife Sanctuary (PPWS), Cambodia (@fig-ppws). Exactly why they have appointed
-someone from the University of Lisbon in a remote role is a bit of a
-mystery, but you decide to take on the responsibilities nonetheless.
+**Congratulations!** You have just been appointed as conservation
+manager of the southern yellow-cheeked crested gibbon (*Nomascus
+gabriallae*) in Phnom Prich Wildlife Sanctuary (PPWS), Cambodia
+(@fig-ppws). Exactly why they have appointed someone who lives so far
+away is a bit of a mystery, but you decide to take on the
+responsibilities nonetheless.
 
 ```{r}
 #| echo: false
@@ -368,17 +368,22 @@ would do the following:
 save(fit.final, file = "ben-stevenson.RData")
 ```
 
-In my case, a file named `ben-stevenson.RData` will be created
-on my hard drive, within my `R` working directory. Find this file on
-your system and upload it using [this link](https://drive.google.com/drive/folders/1SghP6bAKhMHvhIHC-c17r-RACmflBjOT?usp=sharing). If
-you're not sure what your R working directory is, then run
-`getwd()` to find out.
+In my case, a file named `ben-stevenson.RData` will be created on my
+hard drive, within my `R` working directory. Find this file on your
+system and upload it using [this
+link](https://drive.google.com/drive/folders/1SghP6bAKhMHvhIHC-c17r-RACmflBjOT?usp=sharing). If
+you're not sure what your R working directory is, then run `getwd()`
+to find out.
 
 ## In case you're interested...
 
-The density of southern yellow-cheeked crested gibbon (*Nomascus gabriallae*) groups in this simulated example were rather higher than they actually are in PPWS. In reality, there are almost no
+The density of southern yellow-cheeked crested gibbon (*Nomascus
+gabriallae*) groups in this simulated example was quite a bit higher
+than they actually are in PPWS. In reality, there are almost no
 gibbons throughout most of the sanctuary but there are a couple of
 small pockets of high-density forest.
 
 However, population density in this example is roughly similar to that
-of the closely related northern yellow-cheeked crested gibbon (*Nomascus annamensis*) in Veun Sai-Seim Pang National Park, also in Cambodia.
+of the closely related northern yellow-cheeked crested gibbon
+(*Nomascus annamensis*) in Veun Sai-Seim Pang National Park, also in
+Cambodia.
