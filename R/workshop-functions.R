@@ -254,8 +254,12 @@ rank.models <- function(){
     D.ssq <- numeric(n.files)
     for (i in 1:n.files){
         load(file.names[i])
-        D.pred <- acre:::predict_D_for_plot(fit.final, new_data = acreworkshop::ppws)[, 3]
-        D.ssq[i] <- sum((D.pred - D.ppws)^2)
+        if (any(ls() == "fit.final")){
+            D.pred <- acre:::predict_D_for_plot(fit.final, new_data = acreworkshop::ppws)[, 3]
+            D.ssq[i] <- sum((D.pred - D.ppws)^2)
+        } else {
+            D.ssq[i] <- NA
+        }
         rm(fit.final)
     }
     data.frame(file.names, D.ssq)[order(D.ssq), ]
