@@ -205,6 +205,7 @@ plotcov <- function(df, cov.name){
     image_xyz(acreworkshop::ppws[, 1], acreworkshop::ppws[, 2], z, col = "grey", asp = 1)
     col <- viridis(20)
     image_xyz(acreworkshop::ppws[, 1], acreworkshop::ppws[, 2], cov, col = col, asp = 1, add = TRUE)
+    title(main = cov.name)
     if (cov.name == "forest.type"){
         legend("topleft", legend = c("deciduous", "evergreen"), pch = 15, col = c(col[1], col[length(col)]))
     } else {
