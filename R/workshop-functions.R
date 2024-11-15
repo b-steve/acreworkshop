@@ -24,7 +24,7 @@ NULL
 #'     \code{TRUE}!
 #' @export
 measure.covariates <- function(skip.wait = FALSE){
-    quartz()
+    open.click.window()
     z <- rep(0, nrow(acreworkshop::ppws))
     cols <- "grey"
     n.locs <- 24
@@ -105,7 +105,7 @@ measure.covariates <- function(skip.wait = FALSE){
 #'     \code{TRUE}!
 #' @export
 conduct.survey <- function(skip.wait = FALSE){
-    x11()
+    open.click.window()
     z <- rep(0, nrow(acreworkshop::ppws))
     cols <- "grey"
     n.sessions <- 18
@@ -398,4 +398,13 @@ compare.D.to.truth <- function(fit){
     plot(fit, type = "Dsurf", new.data = acreworkshop::ppws)
     plotcov(df, "D")
     par(ppar)
+}
+
+## Opens a clickable plot window.
+open.click.window <- function(){
+    if (Sys.info()["sysname"] == "Darwin"){
+        quartz()
+    } else {
+        x11()
+    }
 }
