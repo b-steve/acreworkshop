@@ -24,7 +24,7 @@ NULL
 #'     \code{TRUE}!
 #' @export
 measure.covariates <- function(skip.wait = FALSE){
-    x11()
+    quartz()
     z <- rep(0, nrow(acreworkshop::ppws))
     cols <- "grey"
     n.locs <- 24
