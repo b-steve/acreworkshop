@@ -25,6 +25,7 @@ NULL
 #' @export
 measure.covariates <- function(skip.wait = FALSE){
     open.click.window()
+    on.exit(dev.off())
     z <- rep(0, nrow(acreworkshop::ppws))
     cols <- "grey"
     n.locs <- 24
@@ -105,6 +106,7 @@ measure.covariates <- function(skip.wait = FALSE){
 #' @export
 conduct.survey <- function(skip.wait = FALSE){
     open.click.window()
+    on.exit(dev.off())
     z <- rep(0, nrow(acreworkshop::ppws))
     cols <- "grey"
     n.sessions <- 18
@@ -405,5 +407,4 @@ open.click.window <- function(){
     } else {
         x11()
     }
-    on.exit(dev.off())
 }
