@@ -87,7 +87,6 @@ measure.covariates <- function(skip.wait = FALSE){
     canopy.height <- round(canopy.height.ppws[closest.points], 1)
     elevation <- round(elevation.ppws[closest.points], 1)
     forest.type <- forest.type.ppws[closest.points]
-    dev.off()
     data.frame(x = locs[, 1], y = locs[, 2], canopy.height = canopy.height,
                elevation = elevation, forest.type = forest.type)
 }
@@ -174,7 +173,6 @@ conduct.survey <- function(skip.wait = FALSE){
         }
         message("\n")
     }
-    dev.off()
     out
 }
 
@@ -407,4 +405,5 @@ open.click.window <- function(){
     } else {
         x11()
     }
+    on.exit(dev.off())
 }
