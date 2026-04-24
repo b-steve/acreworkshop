@@ -21,5 +21,5 @@ Description: This package provides data and functions for a workshop on spatial 
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.3
 LazyData: true
