@@ -3,8 +3,8 @@
 #' @import Rcpp
 #' @importFrom CircStats rvm
 #' @importFrom fields image.plot
-#' @importFrom graphics image legend locator par points
-#' @importFrom grDevices dev.off x11
+#' @importFrom graphics image legend locator par points title
+#' @importFrom grDevices dev.off quartz x11
 #' @importFrom stats rbinom rpois runif
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #' @importFrom viridis viridis
