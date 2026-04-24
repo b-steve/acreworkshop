@@ -21,7 +21,7 @@ you install Rtools, or have to reinstall either `acre` or
 ```{r}
 #| eval: false
 library(devtools)
-install_github("b-steve/acre", ref = "lisbon-workshop")
+install_github("b-steve/acre", ref = "perth-workshop")
 install_github("b-steve/acreworkshop")
 ```
 
@@ -112,13 +112,14 @@ be the following:
  + **Canopy height:** Your biologist collaborators suspect that
   gibbons prefer to live in taller trees, so regions of PPWS with
   higher canopies are more likely to support larger numbers of
-  gibbons.
+  gibbons. Canopy height is measured in metres.
  + **Forest type:** PPWS is covered in forest, but the type of
   forest varies between evergreen and deciduous forest. It's possible
   gibbons will prefer one to the other.
- + **Elevation:** Gibbons may prefer living at high elevations,
-  low elevations, or somewhere in between.
- + **Villages:** It is well known that gibbons try to avoid
+ + **Elevation:** Gibbons may prefer living at high elevations, low
+  elevations, or somewhere in between. Elevation is measured in metres
+  above sea level.
++ **Villages:** It is well known that gibbons try to avoid
   humans, so we might expect gibbon population density to be low at
   locations close to villages.
 
@@ -277,6 +278,7 @@ default model like this:
 #| eval: false
 fit1 <- fit.acre(data)
 ``` 
+You can ignore the output `outer mgc: ...` during model fitting.
 
 To inspect model output, you can try using the following
 functions. See if you can figure out what the output means from each:
